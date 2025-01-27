@@ -1,0 +1,48 @@
+---  
+- name: Install Apache and Upload my Home Page
+  hosts: all
+  become: yes
+  
+  vars:
+    source_file: ./MyWebSite/index.html
+    deatin_file: /var/www/html
+
+  tasks: 
+  - name: Check and Print LINUX Vesion 
+    debug: var=ansible_os_family
+  
+  - block: #Block for REDHAT
+   
+    - name: Install Apache Web Server for RedHat
+      yum: name=httpd state=latest 
+
+    - name: Copy HomePage file to Web Server 
+      copy: src={{ source_file }} dest={{ destin_file }} mode=0555
+
+    - name: Start Web Server service for RedHat 
+      service: name=httpd state=sterted enabled=yes 
+
+    when: ansible_os_family == "RedHat" 
+
+  - block: #Block for Ubuntu
+   
+    - name: Install Apache Web Server for Debian 
+      apt: name=apache2 state=latest 
+
+    - name: Copy HomePage file to Web Server 
+      copy: src={{ source_file }} dest={{ destin_file }} mode=0555
+      notify: Restart Apache Debian 
+
+    - name: Start Web Server service for Debian 
+      service: name=apache2 state=started enabled=yes
+
+    when: ansible_os_family == "Debian" 
+
+  handlers:
+  - name: Restart Apache RedHat
+    service: name=httpd state=restarted 
+
+  - name: Restart Apache Debian 
+    service: name=httpd state=restarted 
+
+#Playbook installs Apache and loads my home page on hosts across different OS

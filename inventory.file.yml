@@ -1,0 +1,7 @@
+---
+
+(test_servers) 
+Linux1   ansible_host=170.11.1.11   ansible_user=ec2-user   owner: Kirill
+Ubuntu2  ansible_host=170.22.2.22   ansible_user=ubuntu     owner: Cray
+
+#A small host file with a group of hosts and small variables
